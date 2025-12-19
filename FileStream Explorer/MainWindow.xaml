@@ -4,9 +4,224 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileStream_Explorer"
+        xmlns:converters="clr-namespace:FileStreamExplorer.Presentation.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="FileStream Explorer - Batch File Operations" 
+        Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <converters:FileSizeConverter x:Key="FileSizeConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <converters:FileIconConverter x:Key="FileIconConverter"/>
+        
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="MinWidth" Value="80"/>
+        </Style>
+        
+        <Style TargetType="TextBlock" x:Key="HeaderText">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Title Bar -->
+        <TextBlock Grid.Row="0" 
+                   Text="FileStream Explorer" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,10"/>
+        
+        <!-- Navigation Bar -->
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Button Content="⬆ Up" 
+                        Command="{Binding NavigateUpCommand}"
+                        ToolTip="Navigate to parent directory"/>
+                <Button Content="🔄 Refresh" 
+                        Command="{Binding RefreshCommand}"
+                        ToolTip="Refresh current directory"/>
+            </StackPanel>
+            
+            <TextBox Grid.Column="1" 
+                     Text="{Binding CurrentDirectory, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="12"
+                     VerticalContentAlignment="Center"
+                     Margin="5"/>
+            
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Text="{Binding SelectedFiles.Count, StringFormat='Selected: {0}'}"
+                           VerticalAlignment="Center"
+                           Margin="10,0"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- File List -->
+        <Border Grid.Row="2" 
+                BorderBrush="Gray" 
+                BorderThickness="1"
+                Margin="0,0,0,10">
+            <Grid>
+                <DataGrid x:Name="FileGrid"
+                          ItemsSource="{Binding Files}"
+                          SelectedItem="{Binding SelectedFile}"
+                          AutoGenerateColumns="False"
+                          SelectionMode="Extended"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          AlternatingRowBackground="LightGray"
+                          CanUserSortColumns="True"
+                          MouseDoubleClick="FileGrid_MouseDoubleClick"
+                          SelectionChanged="FileGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Type" Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding IsDirectory, Converter={StaticResource FileIconConverter}}"
+                                               FontSize="20"
+                                               HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Header="Name" 
+                                          Binding="{Binding Name}" 
+                                          Width="*"
+                                          FontWeight="Bold"/>
+                        
+                        <DataGridTextColumn Header="Extension" 
+                                          Binding="{Binding Extension}" 
+                                          Width="80"/>
+                        
+                        <DataGridTextColumn Header="Size" 
+                                          Binding="{Binding Size, Converter={StaticResource FileSizeConverter}}" 
+                                          Width="100"/>
+                        
+                        <DataGridTextColumn Header="Modified" 
+                                          Binding="{Binding ModifiedDate, StringFormat='yyyy-MM-dd HH:mm'}" 
+                                          Width="140"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <!-- Loading Overlay -->
+                <Border Background="#80FFFFFF" 
+                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}">
+                    <StackPanel HorizontalAlignment="Center" 
+                              VerticalAlignment="Center">
+                        <TextBlock Text="Loading..." 
+                                 FontSize="20" 
+                                 FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+        
+        <!-- Operations Panel -->
+        <Expander Grid.Row="3" 
+                  Header="Batch Operations" 
+                  IsExpanded="True"
+                  Margin="0,0,0,10">
+            <StackPanel Margin="10">
+                <TextBlock Text="Available Operations:" 
+                           Style="{StaticResource HeaderText}"/>
+                
+                <WrapPanel Margin="5">
+                    <Button Content="📝 Rename" 
+                            ToolTip="Add rename operation to pipeline"
+                            Click="AddRenameOperation_Click"/>
+                    <Button Content="📂 Move" 
+                            ToolTip="Add move operation to pipeline"
+                            Click="AddMoveOperation_Click"/>
+                    <Button Content="🔍 Filter" 
+                            ToolTip="Add filter operation to pipeline"
+                            Click="AddFilterOperation_Click"/>
+                    <Button Content="🗑️ Clear Pipeline" 
+                            Click="ClearPipeline_Click"/>
+                </WrapPanel>
+                
+                <Separator Margin="0,10"/>
+                
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="▶️ Execute Pipeline" 
+                            Command="{Binding ExecutePipelineCommand}"
+                            Background="LightGreen"/>
+                    <Button Content="👁️ Preview" 
+                            Command="{Binding PreviewPipelineCommand}"
+                            Background="LightBlue"/>
+                    <Button Content="❌ Clear Selection" 
+                            Command="{Binding ClearSelectionCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </Expander>
+        
+        <!-- Preview/Results Panel -->
+        <Border Grid.Row="4" 
+                BorderBrush="Gray" 
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" 
+                           Text="Preview / Results" 
+                           Style="{StaticResource HeaderText}"
+                           Background="LightGray"
+                           Padding="5"/>
+                
+                <ListView Grid.Row="1" 
+                          ItemsSource="{Binding PreviewChanges}"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Type" 
+                                          DisplayMemberBinding="{Binding Type}" 
+                                          Width="80"/>
+                            <GridViewColumn Header="Original" 
+                                          DisplayMemberBinding="{Binding OriginalPath}" 
+                                          Width="350"/>
+                            <GridViewColumn Header="New" 
+                                          DisplayMemberBinding="{Binding NewPath}" 
+                                          Width="350"/>
+                            <GridViewColumn Header="Description" 
+                                          DisplayMemberBinding="{Binding Description}" 
+                                          Width="200"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Border>
+        
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="5" Margin="0,5,0,0">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}" 
+                           FontWeight="Bold"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock Text="{Binding Files.Count, StringFormat='Files: {0}'}"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

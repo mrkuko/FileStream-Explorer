@@ -1,0 +1,74 @@
+<Window x:Class="FileStream_Explorer.MoveConfigDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Move Configuration" 
+        Height="350" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0" 
+                   Text="Configure Move Operation" 
+                   FontSize="16" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,15"/>
+        
+        <StackPanel Grid.Row="1">
+            <GroupBox Header="Destination" Margin="0,0,0,10">
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Directory:" Width="120" VerticalAlignment="Center"/>
+                        <TextBox x:Name="DestinationTextBox" Width="250"/>
+                        <Button Content="Browse..." Width="80" Margin="5,0" Click="Browse_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            
+            <GroupBox Header="Organization Options" Margin="0,0,0,10">
+                <StackPanel Margin="10">
+                    <CheckBox x:Name="ByExtensionCheckBox" 
+                            Content="Create subdirectories by file extension" 
+                            Margin="0,5"/>
+                    
+                    <CheckBox x:Name="ByDateCheckBox" 
+                            Content="Create subdirectories by date" 
+                            Margin="0,5"/>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,5"
+                              IsEnabled="{Binding IsChecked, ElementName=ByDateCheckBox}">
+                        <TextBlock Text="Date format:" Width="120" VerticalAlignment="Center"/>
+                        <TextBox x:Name="DateFormatTextBox" Width="200" Text="yyyy-MM"/>
+                        <TextBlock Text=" (e.g., 2024-12)" 
+                                 VerticalAlignment="Center" 
+                                 Margin="5,0"
+                                 Foreground="Gray"/>
+                    </StackPanel>
+                    
+                    <CheckBox x:Name="PreserveFolderCheckBox" 
+                            Content="Preserve original folder structure" 
+                            Margin="0,5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,15,0,0">
+            <Button Content="OK" 
+                    Width="80" 
+                    Margin="5" 
+                    IsDefault="True" 
+                    Click="OK_Click"/>
+            <Button Content="Cancel" 
+                    Width="80" 
+                    Margin="5" 
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
