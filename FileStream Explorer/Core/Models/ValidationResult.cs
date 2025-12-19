@@ -57,7 +57,7 @@ namespace FileStreamExplorer.Core.Models
     {
         public string Message { get; set; }
         public ValidationErrorType Type { get; set; }
-        public string FilePath { get; set; }
+        public string? FilePath { get; set; }
 
         public ValidationError(string message, ValidationErrorType type = ValidationErrorType.General)
         {

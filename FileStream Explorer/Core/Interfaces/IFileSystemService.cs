@@ -25,6 +25,11 @@ namespace FileStreamExplorer.Core.Interfaces
         ValidationResult ValidatePath(string path);
 
         /// <summary>
+        /// Validates a file name
+        /// </summary>
+        ValidationResult ValidateFileName(string fileName);
+
+        /// <summary>
         /// Checks for name collisions in a directory
         /// </summary>
         Task<ValidationResult> ValidateNoCollisionsAsync(IEnumerable<FileChange> changes);
@@ -43,7 +48,7 @@ namespace FileStreamExplorer.Core.Interfaces
         /// <summary>
         /// Gets detailed information about a file
         /// </summary>
-        Task<FileItem> GetFileInfoAsync(string path);
+        Task<FileItem?> GetFileInfoAsync(string path);
 
         /// <summary>
         /// Checks if a file or directory exists

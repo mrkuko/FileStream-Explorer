@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace FileStreamExplorer.Core.Models
 {
@@ -9,10 +10,10 @@ namespace FileStreamExplorer.Core.Models
     public class OperationResult
     {
         public bool Success { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         public List<FileChange> Changes { get; set; } = new List<FileChange>();
         public List<string> Errors { get; set; } = new List<string>();
-        public Exception Exception { get; set; }
+        public Exception? Exception { get; set; }
         public int ProcessedCount { get; set; }
         public int FailedCount { get; set; }
 
@@ -25,7 +26,7 @@ namespace FileStreamExplorer.Core.Models
             };
         }
 
-        public static OperationResult FailureResult(string message, Exception ex = null)
+        public static OperationResult FailureResult(string message, Exception? ex = null)
         {
             return new OperationResult
             {
@@ -56,7 +57,7 @@ namespace FileStreamExplorer.Core.Models
         public string OriginalPath { get; set; }
         public string NewPath { get; set; }
         public ChangeType Type { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool Applied { get; set; }
 
         public FileChange(string originalPath, string newPath, ChangeType type)

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.IO;
 
-namespace FileStreamExplorer.Presentation.Converters
+namespace FileStream_Explorer.Presentation.Converters
 {
     /// <summary>
     /// Converts file size in bytes to human-readable format

@@ -29,7 +29,7 @@ namespace FileStream_Explorer
         {
             if (string.IsNullOrWhiteSpace(DestinationTextBox.Text))
             {
-                MessageBox.Show("Please specify a destination directory.", "Validation Error", 
+                System.Windows.MessageBox.Show("Please specify a destination directory.", "Validation Error", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }

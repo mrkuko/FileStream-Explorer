@@ -61,7 +61,7 @@ namespace FileStreamExplorer.Core.Interfaces
         public List<StepResult> StepResults { get; set; } = new List<StepResult>();
         public int TotalProcessed { get; set; }
         public int TotalFailed { get; set; }
-        public string Summary { get; set; }
+        public string Summary { get; set; } = string.Empty;
 
         public void AddStepResult(int stepNumber, string operationName, OperationResult result)
         {
@@ -80,7 +80,7 @@ namespace FileStreamExplorer.Core.Interfaces
     public class StepResult
     {
         public int StepNumber { get; set; }
-        public string OperationName { get; set; }
-        public OperationResult Result { get; set; }
+        public string OperationName { get; set; } = string.Empty;
+        public OperationResult Result { get; set; } = new OperationResult();
     }
 }

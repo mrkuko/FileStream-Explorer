@@ -64,7 +64,7 @@ namespace FileStreamExplorer.Infrastructure.Services
             });
         }
 
-        public async Task<FileItem> GetFileInfoAsync(string path)
+        public async Task<FileItem?> GetFileInfoAsync(string path)
         {
             return await Task.Run(() =>
             {

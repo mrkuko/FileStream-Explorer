@@ -1,5 +1,6 @@
 using FileStreamExplorer.Core.Interfaces;
 using FileStreamExplorer.Core.Models;
+using FileStreamExplorer.Core.Operations;
 using FileStreamExplorer.Presentation.Commands;
 using System;
 using System.Collections.ObjectModel;
@@ -20,10 +21,10 @@ namespace FileStreamExplorer.Presentation.ViewModels
         private readonly IProcessingPipeline _pipeline;
         private readonly OperationFactory _operationFactory;
 
-        private string _currentDirectory;
-        private FileItem _selectedFile;
+        private string _currentDirectory = string.Empty;
+        private FileItem? _selectedFile;
         private bool _isLoading;
-        private string _statusMessage;
+        private string _statusMessage = string.Empty;
         private bool _isPreviewMode;
 
         public ObservableCollection<FileItem> Files { get; }
@@ -38,12 +39,12 @@ namespace FileStreamExplorer.Presentation.ViewModels
             {
                 if (SetProperty(ref _currentDirectory, value))
                 {
-                    LoadDirectoryAsync(value);
+                    _ = LoadDirectoryAsync(value);
                 }
             }
         }
 
-        public FileItem SelectedFile
+        public FileItem? SelectedFile
         {
             get => _selectedFile;
             set => SetProperty(ref _selectedFile, value);
@@ -156,7 +157,7 @@ namespace FileStreamExplorer.Presentation.ViewModels
             return !string.IsNullOrEmpty(CurrentDirectory) && Directory.GetParent(CurrentDirectory) != null;
         }
 
-        private void OpenFolder(FileItem folder)
+        private void OpenFolder(FileItem? folder)
         {
             if (folder != null && folder.IsDirectory)
             {
@@ -164,7 +165,7 @@ namespace FileStreamExplorer.Presentation.ViewModels
             }
         }
 
-        private bool CanOpenFolder(FileItem folder)
+        private bool CanOpenFolder(FileItem? folder)
         {
             return folder != null && folder.IsDirectory;
         }

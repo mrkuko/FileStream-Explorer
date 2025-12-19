@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileStream_Explorer"
-        xmlns:converters="clr-namespace:FileStreamExplorer.Presentation.Converters"
+        xmlns:converters="clr-namespace:FileStream_Explorer.Presentation.Converters"
         mc:Ignorable="d"
         Title="FileStream Explorer - Batch File Operations" 
         Height="700" Width="1200"
