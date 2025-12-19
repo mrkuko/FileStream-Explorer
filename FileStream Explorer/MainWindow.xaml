@@ -223,14 +223,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         
-                        <StackPanel Grid.Row="0" 
-                                    Orientation="Horizontal" 
-                                    Background="LightGray"
-                                    Margin="0">
-                            <TextBlock Text="Pipeline Queue - Double-click to edit, drag to reorder" 
-                                       Style="{StaticResource HeaderText}"
-                                       Padding="5"/>
-                        </StackPanel>
+                        <!-- Header removed per request -->
                         
                         <ListBox x:Name="PipelineQueueList"
                                  Grid.Row="1"
