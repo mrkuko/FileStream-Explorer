@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,9 +45,25 @@ namespace FileStream_Explorer
 
         private void FileGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (_viewModel.SelectedFile != null && _viewModel.SelectedFile.IsDirectory)
+            if (_viewModel.SelectedFile == null)
+                return;
+
+            if (_viewModel.SelectedFile.IsDirectory)
             {
                 _viewModel.CurrentDirectory = _viewModel.SelectedFile.FullPath;
+            }
+            else
+            {
+                try
+                {
+                    // Open File Explorer and select the file's path
+                    var path = _viewModel.SelectedFile.FullPath;
+                    Process.Start("explorer.exe", $"/select,\"{path}\"");
+                }
+                catch (Exception ex)
+                {
+                    _viewModel.StatusMessage = $"Failed to open parent folder: {ex.Message}";
+                }
             }
         }
 
