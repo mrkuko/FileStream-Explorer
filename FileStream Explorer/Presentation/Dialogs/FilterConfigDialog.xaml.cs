@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using FileStreamExplorer.Infrastructure.Operations;
@@ -9,10 +10,27 @@ namespace FileStream_Explorer
     {
         public FilterConfiguration Configuration { get; private set; }
 
-        public FilterConfigDialog()
+        public FilterConfigDialog() : this(null)
+        {
+        }
+
+        public FilterConfigDialog(FilterConfiguration? existingConfig)
         {
             InitializeComponent();
-            Configuration = new FilterConfiguration();
+            Configuration = existingConfig ?? new FilterConfiguration();
+            LoadConfigurationToUI();
+        }
+
+        private void LoadConfigurationToUI()
+        {
+            NamePatternTextBox.Text = Configuration.NamePattern;
+            UseRegexCheckBox.IsChecked = Configuration.UseRegex;
+            IncludeDirectoriesCheckBox.IsChecked = Configuration.IncludeDirectories;
+            ExtensionsTextBox.Text = string.Join(", ", Configuration.Extensions ?? new List<string>());
+            MinSizeTextBox.Text = Configuration.MinSize?.ToString() ?? string.Empty;
+            MaxSizeTextBox.Text = Configuration.MaxSize?.ToString() ?? string.Empty;
+            MinDatePicker.SelectedDate = Configuration.MinDate;
+            MaxDatePicker.SelectedDate = Configuration.MaxDate;
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)

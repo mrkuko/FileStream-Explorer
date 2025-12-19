@@ -7,10 +7,36 @@ namespace FileStream_Explorer
     {
         public RenameConfiguration Configuration { get; private set; }
 
-        public RenameConfigDialog()
+        public RenameConfigDialog() : this(null)
+        {
+        }
+
+        public RenameConfigDialog(RenameConfiguration? existingConfig)
         {
             InitializeComponent();
-            Configuration = new RenameConfiguration();
+            Configuration = existingConfig ?? new RenameConfiguration();
+            LoadConfigurationToUI();
+        }
+
+        private void LoadConfigurationToUI()
+        {
+            PrefixTextBox.Text = Configuration.Prefix;
+            SuffixTextBox.Text = Configuration.Suffix;
+            PreserveExtensionCheckBox.IsChecked = Configuration.PreserveExtension;
+            FindTextBox.Text = Configuration.FindText;
+            ReplaceTextBox.Text = Configuration.ReplaceText;
+            UseNumberingCheckBox.IsChecked = Configuration.UseSequentialNumbering;
+            NormalizeSpacesCheckBox.IsChecked = Configuration.NormalizeSpaces;
+            KeepCoreNameCheckBox.IsChecked = Configuration.KeepCoreName;
+            StartNumberTextBox.Text = Configuration.StartNumber.ToString();
+            NumberPaddingTextBox.Text = Configuration.NumberPadding.ToString();
+            CaseTransformComboBox.SelectedIndex = Configuration.CaseTransform switch
+            {
+                CaseTransform.Uppercase => 1,
+                CaseTransform.Lowercase => 2,
+                CaseTransform.TitleCase => 3,
+                _ => 0
+            };
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)

@@ -43,11 +43,25 @@ namespace FileStream_Explorer.Presentation.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool boolValue)
+            bool boolValue = false;
+            
+            if (value is bool b)
             {
-                return boolValue ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+                boolValue = b;
             }
-            return System.Windows.Visibility.Collapsed;
+            else if (value is int intValue)
+            {
+                boolValue = intValue > 0;
+            }
+            
+            // Check if we should invert
+            bool invert = parameter is string s && s.Equals("Invert", StringComparison.OrdinalIgnoreCase);
+            if (invert)
+            {
+                boolValue = !boolValue;
+            }
+            
+            return boolValue ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

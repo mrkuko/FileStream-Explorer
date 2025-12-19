@@ -8,10 +8,24 @@ namespace FileStream_Explorer
     {
         public MoveConfiguration Configuration { get; private set; }
 
-        public MoveConfigDialog()
+        public MoveConfigDialog() : this(null)
+        {
+        }
+
+        public MoveConfigDialog(MoveConfiguration? existingConfig)
         {
             InitializeComponent();
-            Configuration = new MoveConfiguration();
+            Configuration = existingConfig ?? new MoveConfiguration();
+            LoadConfigurationToUI();
+        }
+
+        private void LoadConfigurationToUI()
+        {
+            DestinationTextBox.Text = Configuration.DestinationDirectory;
+            ByExtensionCheckBox.IsChecked = Configuration.CreateSubdirectoriesByExtension;
+            ByDateCheckBox.IsChecked = Configuration.CreateSubdirectoriesByDate;
+            DateFormatTextBox.Text = Configuration.DateFormat;
+            PreserveFolderCheckBox.IsChecked = Configuration.PreserveFolderStructure;
         }
 
         private void Browse_Click(object sender, RoutedEventArgs e)

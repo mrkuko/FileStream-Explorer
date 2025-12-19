@@ -177,39 +177,154 @@
         <Border Grid.Row="4" 
                 BorderBrush="Gray" 
                 BorderThickness="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <TabControl x:Name="ResultsTabControl">
+                <!-- Preview/Results Tab -->
+                <TabItem Header="📋 Preview / Results">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" 
+                                   Text="Preview / Results" 
+                                   Style="{StaticResource HeaderText}"
+                                   Background="LightGray"
+                                   Padding="5"/>
+                        
+                        <ListView Grid.Row="1" 
+                                  ItemsSource="{Binding PreviewChanges}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Type" 
+                                                  DisplayMemberBinding="{Binding Type}" 
+                                                  Width="80"/>
+                                    <GridViewColumn Header="Original" 
+                                                  DisplayMemberBinding="{Binding OriginalPath}" 
+                                                  Width="350"/>
+                                    <GridViewColumn Header="New" 
+                                                  DisplayMemberBinding="{Binding NewPath}" 
+                                                  Width="350"/>
+                                    <GridViewColumn Header="Description" 
+                                                  DisplayMemberBinding="{Binding Description}" 
+                                                  Width="200"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </TabItem>
                 
-                <TextBlock Grid.Row="0" 
-                           Text="Preview / Results" 
-                           Style="{StaticResource HeaderText}"
-                           Background="LightGray"
-                           Padding="5"/>
-                
-                <ListView Grid.Row="1" 
-                          ItemsSource="{Binding PreviewChanges}"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Type" 
-                                          DisplayMemberBinding="{Binding Type}" 
-                                          Width="80"/>
-                            <GridViewColumn Header="Original" 
-                                          DisplayMemberBinding="{Binding OriginalPath}" 
-                                          Width="350"/>
-                            <GridViewColumn Header="New" 
-                                          DisplayMemberBinding="{Binding NewPath}" 
-                                          Width="350"/>
-                            <GridViewColumn Header="Description" 
-                                          DisplayMemberBinding="{Binding Description}" 
-                                          Width="200"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
+                <!-- Pipeline Queue Tab -->
+                <TabItem Header="⚙️ Pipeline Queue">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Grid.Row="0" 
+                                    Orientation="Horizontal" 
+                                    Background="LightGray"
+                                    Margin="0">
+                            <TextBlock Text="Pipeline Queue - Double-click to edit, drag to reorder" 
+                                       Style="{StaticResource HeaderText}"
+                                       Padding="5"/>
+                        </StackPanel>
+                        
+                        <ListBox x:Name="PipelineQueueList"
+                                 Grid.Row="1"
+                                 ItemsSource="{Binding PipelineOperations}"
+                                 AllowDrop="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 MouseDoubleClick="PipelineQueueList_MouseDoubleClick"
+                                 PreviewMouseLeftButtonDown="PipelineQueueList_PreviewMouseLeftButtonDown"
+                                 PreviewMouseMove="PipelineQueueList_PreviewMouseMove"
+                                 Drop="PipelineQueueList_Drop"
+                                 DragOver="PipelineQueueList_DragOver">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="5"/>
+                                    <Setter Property="Margin" Value="2"/>
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="LightGray"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="LightBlue"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#E8F4FD"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- Order Number -->
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Order, StringFormat='#{0}'}"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="Gray"/>
+                                        
+                                        <!-- Icon -->
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Icon}"
+                                                   FontSize="20"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"/>
+                                        
+                                        <!-- Operation Info -->
+                                        <StackPanel Grid.Column="2" 
+                                                    VerticalAlignment="Center"
+                                                    Margin="10,0">
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       FontWeight="Bold"
+                                                       FontSize="14"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="11"
+                                                       Foreground="Gray"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                        
+                                        <!-- Delete Button -->
+                                        <Button Grid.Column="3"
+                                                Content="❌"
+                                                ToolTip="Remove from pipeline"
+                                                Click="DeletePipelineOperation_Click"
+                                                Tag="{Binding}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="8,4"
+                                                FontSize="14"
+                                                Cursor="Hand"
+                                                VerticalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        
+                        <!-- Empty State -->
+                        <TextBlock Grid.Row="1"
+                                   Text="No operations in pipeline. Add operations using the buttons above."
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Gray"
+                                   FontStyle="Italic"
+                                   Visibility="{Binding PipelineOperations.Count, Converter={StaticResource BoolToVisConverter}, ConverterParameter=Invert}"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Border>
         
         <!-- Status Bar -->

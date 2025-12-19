@@ -4,6 +4,7 @@ using FileStreamExplorer.Core.Operations;
 using FileStreamExplorer.Presentation.Commands;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +32,12 @@ namespace FileStreamExplorer.Presentation.ViewModels
         public ObservableCollection<FileItem> SelectedFiles { get; }
         public ObservableCollection<FileChange> PreviewChanges { get; }
         public ObservableCollection<string> DirectoryHistory { get; }
+        public ObservableCollection<PipelineOperationItem> PipelineOperations { get; }
+
+        /// <summary>
+        /// Reference to the pipeline for external access (e.g., adding operations from code-behind)
+        /// </summary>
+        public IProcessingPipeline Pipeline => _pipeline;
 
         public string CurrentDirectory
         {
@@ -89,6 +96,7 @@ namespace FileStreamExplorer.Presentation.ViewModels
             SelectedFiles = new ObservableCollection<FileItem>();
             PreviewChanges = new ObservableCollection<FileChange>();
             DirectoryHistory = new ObservableCollection<string>();
+            PipelineOperations = new ObservableCollection<PipelineOperationItem>();
 
             // Initialize commands
             NavigateUpCommand = new RelayCommand(NavigateUp, CanNavigateUp);
@@ -281,6 +289,74 @@ namespace FileStreamExplorer.Presentation.ViewModels
             {
                 SelectedFiles.Remove(file);
                 StatusMessage = $"{SelectedFiles.Count} files selected";
+            }
+        }
+
+        /// <summary>
+        /// Adds an operation to the pipeline and updates the UI collection
+        /// </summary>
+        public void AddPipelineOperation(IFileOperation operation)
+        {
+            _pipeline.AddOperation(operation);
+            RefreshPipelineOperations();
+            StatusMessage = $"Added {operation.DisplayName} to pipeline ({_pipeline.Operations.Count} operations)";
+        }
+
+        /// <summary>
+        /// Removes an operation from the pipeline and updates the UI collection
+        /// </summary>
+        public void RemovePipelineOperation(PipelineOperationItem item)
+        {
+            if (item?.Operation != null)
+            {
+                _pipeline.RemoveOperation(item.Operation);
+                RefreshPipelineOperations();
+                StatusMessage = $"Removed {item.DisplayName} from pipeline ({_pipeline.Operations.Count} operations)";
+            }
+        }
+
+        /// <summary>
+        /// Moves an operation within the pipeline (for drag-drop reordering)
+        /// </summary>
+        public void MovePipelineOperation(int oldIndex, int newIndex)
+        {
+            if (oldIndex < 0 || oldIndex >= _pipeline.Operations.Count ||
+                newIndex < 0 || newIndex >= _pipeline.Operations.Count ||
+                oldIndex == newIndex)
+                return;
+
+            // Get the operation to move
+            var operation = _pipeline.Operations[oldIndex];
+            
+            // Remove from old position
+            _pipeline.RemoveOperation(operation);
+            
+            // Insert at new position
+            _pipeline.InsertOperation(newIndex, operation);
+            
+            RefreshPipelineOperations();
+            StatusMessage = $"Reordered pipeline operations";
+        }
+
+        /// <summary>
+        /// Clears all operations from the pipeline
+        /// </summary>
+        public void ClearPipelineOperations()
+        {
+            _pipeline.Clear();
+            RefreshPipelineOperations();
+            StatusMessage = "Pipeline cleared";
+        }
+
+        /// <summary>
+        /// Syncs the PipelineOperations collection with the actual pipeline
+        /// </summary>
+        public void RefreshPipelineOperations()
+        {
+            PipelineOperations.Clear();
+            for (int i = 0; i < _pipeline.Operations.Count; i++)
+            {
+                PipelineOperations.Add(new PipelineOperationItem(_pipeline.Operations[i], i + 1));
             }
         }
     }
