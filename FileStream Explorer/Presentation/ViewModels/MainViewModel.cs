@@ -60,7 +60,14 @@ namespace FileStreamExplorer.Presentation.ViewModels
         public bool IsLoading
         {
             get => _isLoading;
-            set => SetProperty(ref _isLoading, value);
+            set
+            {
+                if (SetProperty(ref _isLoading, value))
+                {
+                    (ExecutePipelineCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (PreviewPipelineCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
         }
 
         public string StatusMessage
@@ -105,6 +112,9 @@ namespace FileStreamExplorer.Presentation.ViewModels
             ExecutePipelineCommand = new RelayCommand(async () => await ExecutePipelineAsync(), CanExecutePipeline);
             PreviewPipelineCommand = new RelayCommand(async () => await PreviewPipelineAsync(), CanExecutePipeline);
             ClearSelectionCommand = new RelayCommand(ClearSelection);
+
+            // Watch selection changes to update command availability
+            SelectedFiles.CollectionChanged += SelectedFiles_CollectionChanged;
 
             // Set initial directory
             CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -180,9 +190,10 @@ namespace FileStreamExplorer.Presentation.ViewModels
 
         private async Task ExecutePipelineAsync()
         {
-            if (!SelectedFiles.Any())
+            var targets = SelectedFiles.Any() ? SelectedFiles.ToList() : Files.Where(f => !f.IsDirectory).ToList();
+            if (!targets.Any())
             {
-                StatusMessage = "No files selected";
+                StatusMessage = "No target files to execute on";
                 return;
             }
 
@@ -193,7 +204,7 @@ namespace FileStreamExplorer.Presentation.ViewModels
 
             try
             {
-                var result = await _pipeline.ExecuteAsync(SelectedFiles.ToList());
+                var result = await _pipeline.ExecuteAsync(targets);
 
                 if (result.Success)
                 {
@@ -226,9 +237,10 @@ namespace FileStreamExplorer.Presentation.ViewModels
 
         private async Task PreviewPipelineAsync()
         {
-            if (!SelectedFiles.Any())
+            var targets = SelectedFiles.Any() ? SelectedFiles.ToList() : Files.Where(f => !f.IsDirectory).ToList();
+            if (!targets.Any())
             {
-                StatusMessage = "No files selected";
+                StatusMessage = "No target files to preview";
                 return;
             }
 
@@ -239,7 +251,7 @@ namespace FileStreamExplorer.Presentation.ViewModels
 
             try
             {
-                var result = await _pipeline.PreviewAsync(SelectedFiles.ToList());
+                var result = await _pipeline.PreviewAsync(targets);
 
                 StatusMessage = result.Summary;
 
@@ -264,7 +276,7 @@ namespace FileStreamExplorer.Presentation.ViewModels
 
         private bool CanExecutePipeline()
         {
-            return SelectedFiles.Any() && _pipeline.Operations.Any() && !IsLoading;
+            return _pipeline.Operations.Any() && !IsLoading;
         }
 
         private void ClearSelection()
@@ -385,6 +397,14 @@ namespace FileStreamExplorer.Presentation.ViewModels
             {
                 PipelineOperations.Add(new PipelineOperationItem(_pipeline.Operations[i], i + 1));
             }
+            (ExecutePipelineCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (PreviewPipelineCommand as RelayCommand)?.RaiseCanExecuteChanged();
+        }
+
+        private void SelectedFiles_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            (ExecutePipelineCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (PreviewPipelineCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }
