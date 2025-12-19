@@ -70,6 +70,7 @@ namespace FileStreamExplorer.Core.Models
         /// </summary>
         public string Icon => OperationId switch
         {
+            "source" => "📥",
             "rename" => "📝",
             "move" => "📂",
             "filter" => "🔍",

@@ -77,8 +77,51 @@ namespace FileStream_Explorer
             }
         }
 
+        /// <summary>
+        /// Creates a Source operation from the currently selected files if pipeline is empty
+        /// </summary>
+        private void EnsureSourceOperationExists()
+        {
+            if (_pipeline.Operations.Count == 0 && _viewModel.SelectedFiles.Any())
+            {
+                // Auto-add a source operation using the current directory
+                var sourceConfig = new SourceConfiguration
+                {
+                    SourceDirectory = _viewModel.CurrentDirectory,
+                    MergeWithExisting = false,
+                    IncludeSubdirectories = false,
+                    FilePattern = "*.*"
+                };
+                var sourceOp = new SourceOperation(_context, sourceConfig);
+                _viewModel.AddPipelineOperation(sourceOp);
+                _viewModel.StatusMessage = "Auto-added Source operation from current directory";
+            }
+        }
+
+        private void AddSourceOperation_Click(object sender, RoutedEventArgs e)
+        {
+            var configDialog = new SourceConfigDialog();
+            // Pre-fill with current directory
+            if (!string.IsNullOrEmpty(_viewModel.CurrentDirectory))
+            {
+                configDialog = new SourceConfigDialog(new SourceConfiguration 
+                { 
+                    SourceDirectory = _viewModel.CurrentDirectory,
+                    MergeWithExisting = _pipeline.Operations.Count > 0 // Merge if there are existing operations
+                });
+            }
+            
+            if (configDialog.ShowDialog() == true)
+            {
+                var operation = new SourceOperation(_context, configDialog.Configuration);
+                _viewModel.AddPipelineOperation(operation);
+            }
+        }
+
         private void AddRenameOperation_Click(object sender, RoutedEventArgs e)
         {
+            EnsureSourceOperationExists();
+            
             // Show configuration dialog
             var configDialog = new RenameConfigDialog();
             if (configDialog.ShowDialog() == true)
@@ -90,6 +133,8 @@ namespace FileStream_Explorer
 
         private void AddMoveOperation_Click(object sender, RoutedEventArgs e)
         {
+            EnsureSourceOperationExists();
+            
             var configDialog = new MoveConfigDialog();
             if (configDialog.ShowDialog() == true)
             {
@@ -100,6 +145,8 @@ namespace FileStream_Explorer
 
         private void AddFilterOperation_Click(object sender, RoutedEventArgs e)
         {
+            EnsureSourceOperationExists();
+            
             var configDialog = new FilterConfigDialog();
             if (configDialog.ShowDialog() == true)
             {
@@ -171,6 +218,19 @@ namespace FileStream_Explorer
                         if (dialog.ShowDialog() == true)
                         {
                             filterOp.Configuration = dialog.Configuration;
+                            updated = true;
+                        }
+                    }
+                    break;
+
+                case "source":
+                    if (item.Operation is SourceOperation sourceOp && 
+                        sourceOp.Configuration is SourceConfiguration sourceConfig)
+                    {
+                        var dialog = new SourceConfigDialog(sourceConfig);
+                        if (dialog.ShowDialog() == true)
+                        {
+                            sourceOp.Configuration = dialog.Configuration;
                             updated = true;
                         }
                     }

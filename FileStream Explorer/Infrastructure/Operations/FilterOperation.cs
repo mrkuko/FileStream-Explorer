@@ -95,18 +95,20 @@ namespace FileStreamExplorer.Infrastructure.Operations
             {
                 var result = new OperationResult { Success = true };
                 var filteredFiles = ApplyFilters(files);
+                var filteredPaths = filteredFiles.Select(f => f.FullPath).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-                // Filter operation doesn't modify files, but we track what passed the filter
-                foreach (var file in filteredFiles)
+                // Show all files with their filter status for preview
+                foreach (var file in files)
                 {
-                    result.AddChange(new FileChange(file.FullPath, file.FullPath, ChangeType.Modify)
+                    bool matched = filteredPaths.Contains(file.FullPath);
+                    result.AddChange(new FileChange(file.FullPath, file.FullPath, matched ? ChangeType.None : ChangeType.Delete)
                     {
-                        Description = "Matched filter criteria",
+                        Description = matched ? "✓ Matched filter" : "✗ Excluded by filter",
                         Applied = true
                     });
                 }
 
-                result.Message = $"Filtered {files.Count} files to {filteredFiles.Count} matches";
+                result.Message = $"Filtered {files.Count} files → {filteredFiles.Count} matches, {files.Count - filteredFiles.Count} excluded";
                 return result;
             });
         }

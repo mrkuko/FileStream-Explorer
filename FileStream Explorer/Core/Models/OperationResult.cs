@@ -82,6 +82,7 @@ namespace FileStreamExplorer.Core.Models
 
     public enum ChangeType
     {
+        None,
         Rename,
         Move,
         Delete,
