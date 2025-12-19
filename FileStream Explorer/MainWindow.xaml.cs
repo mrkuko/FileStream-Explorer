@@ -195,6 +195,14 @@ namespace FileStream_Explorer
             }
         }
 
+        private void DuplicatePipelineOperation_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.Button button && button.Tag is PipelineOperationItem item)
+            {
+                _viewModel.DuplicatePipelineOperation(item);
+            }
+        }
+
         #endregion
 
         #region Drag-Drop Reordering

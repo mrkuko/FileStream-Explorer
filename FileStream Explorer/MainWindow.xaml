@@ -291,8 +291,18 @@
                                         </StackPanel>
                                         
                                         <!-- Delete Button -->
-                                        <Button Grid.Column="3"
-                                                Content="❌"
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Content="⧉"
+                                                ToolTip="Duplicate operation"
+                                                Click="DuplicatePipelineOperation_Click"
+                                                Tag="{Binding}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="6,4"
+                                                FontSize="14"
+                                                Cursor="Hand"
+                                                VerticalAlignment="Center"/>
+                                            <Button Content="❌"
                                                 ToolTip="Remove from pipeline"
                                                 Click="DeletePipelineOperation_Click"
                                                 Tag="{Binding}"
@@ -302,6 +312,7 @@
                                                 FontSize="14"
                                                 Cursor="Hand"
                                                 VerticalAlignment="Center"/>
+                                        </StackPanel>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

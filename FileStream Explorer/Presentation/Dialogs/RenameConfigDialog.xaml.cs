@@ -37,6 +37,7 @@ namespace FileStream_Explorer
                 CaseTransform.TitleCase => 3,
                 _ => 0
             };
+            UseRegexCheckBox.IsChecked = Configuration.UseRegex;
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
@@ -63,6 +64,8 @@ namespace FileStream_Explorer
                 3 => CaseTransform.TitleCase,
                 _ => CaseTransform.None
             };
+
+            Configuration.UseRegex = UseRegexCheckBox.IsChecked ?? false;
 
             DialogResult = true;
         }

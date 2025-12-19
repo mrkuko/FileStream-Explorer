@@ -316,6 +316,33 @@ namespace FileStreamExplorer.Presentation.ViewModels
         }
 
         /// <summary>
+        /// Duplicate an existing pipeline operation (inserts the clone after the original)
+        /// </summary>
+        public void DuplicatePipelineOperation(PipelineOperationItem item)
+        {
+            if (item?.Operation == null) return;
+
+            // Find index of original
+            var ops = _pipeline.Operations;
+            int index = -1;
+            for (int i = 0; i < ops.Count; i++)
+            {
+                if (ops[i] == item.Operation)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index < 0) return;
+
+            var clone = item.Operation.Clone();
+            // Insert after original
+            _pipeline.InsertOperation(index + 1, clone);
+            RefreshPipelineOperations();
+            StatusMessage = $"Duplicated {item.DisplayName} in pipeline";
+        }
+
+        /// <summary>
         /// Moves an operation within the pipeline (for drag-drop reordering)
         /// </summary>
         public void MovePipelineOperation(int oldIndex, int newIndex)

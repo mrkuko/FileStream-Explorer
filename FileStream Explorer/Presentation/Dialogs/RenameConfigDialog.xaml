@@ -50,6 +50,9 @@
                             <TextBlock Text="Replace with:" Width="120" VerticalAlignment="Center"/>
                             <TextBox x:Name="ReplaceTextBox" Width="300"/>
                         </StackPanel>
+                        <CheckBox x:Name="UseRegexCheckBox"
+                                  Content="Use regular expression for find/replace"
+                                  Margin="0,8,0,0"/>
                     </StackPanel>
                 </GroupBox>
                 

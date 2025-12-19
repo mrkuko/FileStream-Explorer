@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +17,8 @@ namespace FileStreamExplorer.Infrastructure.Operations
     {
         public string Prefix { get; set; } = string.Empty;
         public string Suffix { get; set; } = string.Empty;
+        // When true, treat FindText as a regular expression and use Regex.Replace
+        public bool UseRegex { get; set; }
         public bool UseSequentialNumbering { get; set; }
         public int StartNumber { get; set; } = 1;
         public int NumberPadding { get; set; } = 3;
@@ -95,6 +98,19 @@ namespace FileStreamExplorer.Infrastructure.Operations
             if (_config.UseSequentialNumbering && _config.NumberPadding < 1)
             {
                 result.AddError("Number padding must be at least 1");
+            }
+
+            // Validate regex if requested
+            if (_config.UseRegex && !string.IsNullOrEmpty(_config.FindText))
+            {
+                try
+                {
+                    _ = new Regex(_config.FindText);
+                }
+                catch (ArgumentException)
+                {
+                    result.AddError($"Invalid regex pattern: {_config.FindText}");
+                }
             }
 
             return result;
@@ -197,7 +213,22 @@ namespace FileStreamExplorer.Infrastructure.Operations
             // Find and replace
             if (!string.IsNullOrEmpty(_config.FindText))
             {
-                result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty);
+                if (_config.UseRegex)
+                {
+                    try
+                    {
+                        result = Regex.Replace(result, _config.FindText, _config.ReplaceText ?? string.Empty, RegexOptions.IgnoreCase);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // If regex is invalid at runtime, fall back to simple replace
+                        result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty);
+                    }
+                }
+                else
+                {
+                    result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty);
+                }
             }
 
             // Normalize spaces
@@ -243,6 +274,7 @@ namespace FileStreamExplorer.Infrastructure.Operations
             {
                 Prefix = _config.Prefix,
                 Suffix = _config.Suffix,
+                UseRegex = _config.UseRegex,
                 UseSequentialNumbering = _config.UseSequentialNumbering,
                 StartNumber = _config.StartNumber,
                 NumberPadding = _config.NumberPadding,
