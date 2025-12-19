@@ -54,12 +54,20 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Button Content="⬆ Up" 
-                        Command="{Binding NavigateUpCommand}"
-                        ToolTip="Navigate to parent directory"/>
-                <Button Content="🔄 Refresh" 
-                        Command="{Binding RefreshCommand}"
-                        ToolTip="Refresh current directory"/>
+                <Button Command="{Binding NavigateUpCommand}"
+                        ToolTip="Navigate to parent directory">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Assets/button_up.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="Up" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding RefreshCommand}"
+                        ToolTip="Refresh current directory">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Assets/button_refresh.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="Refresh" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
             
             <TextBox Grid.Column="1" 
@@ -145,18 +153,34 @@
                            Style="{StaticResource HeaderText}"/>
                 
                 <WrapPanel Margin="5">
-                    <Button Content="📥 Source" 
-                            ToolTip="Add source operation to load files from a folder"
-                            Click="AddSourceOperation_Click"/>
-                    <Button Content="📝 Rename" 
-                            ToolTip="Add rename operation to pipeline"
-                            Click="AddRenameOperation_Click"/>
-                    <Button Content="📂 Move" 
-                            ToolTip="Add move operation to pipeline"
-                            Click="AddMoveOperation_Click"/>
-                    <Button Content="🔍 Filter" 
-                            ToolTip="Add filter operation to pipeline"
-                            Click="AddFilterOperation_Click"/>
+                    <Button ToolTip="Add source operation to load files from a folder"
+                            Click="AddSourceOperation_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Assets/button_sources.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Source" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Add rename operation to pipeline"
+                            Click="AddRenameOperation_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Assets/button_rename.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Rename" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Add move operation to pipeline"
+                            Click="AddMoveOperation_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Assets/button_move.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Move" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Add filter operation to pipeline"
+                            Click="AddFilterOperation_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Assets/button_filter.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Filter" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                     <Button Content="🗑️ Clear Pipeline" 
                             Click="ClearPipeline_Click"/>
                 </WrapPanel>
@@ -305,16 +329,16 @@
                                                 FontSize="14"
                                                 Cursor="Hand"
                                                 VerticalAlignment="Center"/>
-                                            <Button Content="❌"
-                                                ToolTip="Remove from pipeline"
+                                            <Button ToolTip="Remove from pipeline"
                                                 Click="DeletePipelineOperation_Click"
                                                 Tag="{Binding}"
                                                 Background="Transparent"
                                                 BorderThickness="0"
-                                                Padding="8,4"
-                                                FontSize="14"
+                                                Padding="4"
                                                 Cursor="Hand"
-                                                VerticalAlignment="Center"/>
+                                                VerticalAlignment="Center">
+                                                <Image Source="Assets/button_delete_pipeline.png" Width="16" Height="16"/>
+                                            </Button>
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>

@@ -11,4 +11,8 @@
     <ApplicationIcon>Assets\FileStreamExplorer.ico</ApplicationIcon>
     <Win32Icon>Assets\FileStreamExplorer.ico</Win32Icon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\*.png" />
+  </ItemGroup>
 </Project>
