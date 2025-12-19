@@ -145,10 +145,10 @@
                            Style="{StaticResource HeaderText}"/>
                 
                 <WrapPanel Margin="5">
-                    <Button Content="� Source" 
+                    <Button Content="📥 Source" 
                             ToolTip="Add source operation to load files from a folder"
                             Click="AddSourceOperation_Click"/>
-                    <Button Content="�📝 Rename" 
+                    <Button Content="📝 Rename" 
                             ToolTip="Add rename operation to pipeline"
                             Click="AddRenameOperation_Click"/>
                     <Button Content="📂 Move" 

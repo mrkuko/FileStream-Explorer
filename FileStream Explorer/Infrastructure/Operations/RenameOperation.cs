@@ -222,12 +222,13 @@ namespace FileStreamExplorer.Infrastructure.Operations
                     catch (ArgumentException)
                     {
                         // If regex is invalid at runtime, fall back to simple replace
-                        result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty);
+                        result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty, StringComparison.OrdinalIgnoreCase);
                     }
                 }
                 else
                 {
-                    result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty);
+                    // Case-insensitive replace for non-regex mode
+                    result = result.Replace(_config.FindText, _config.ReplaceText ?? string.Empty, StringComparison.OrdinalIgnoreCase);
                 }
             }
 

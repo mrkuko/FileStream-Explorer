@@ -2,9 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Source Configuration" 
-        Height="320" Width="500"
+        Height="380" Width="520"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+        ResizeMode="CanResizeWithGrip"
+        MinHeight="320" MinWidth="450">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,35 +19,37 @@
                    FontWeight="Bold" 
                    Margin="0,0,0,15"/>
         
-        <StackPanel Grid.Row="1">
-            <GroupBox Header="Source Directory" Margin="0,0,0,10">
-                <StackPanel Margin="10">
-                    <StackPanel Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Text="Directory:" Width="100" VerticalAlignment="Center"/>
-                        <TextBox x:Name="SourceDirectoryTextBox" Width="270"/>
-                        <Button Content="..." Width="30" Margin="5,0,0,0" Click="Browse_Click"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <GroupBox Header="Source Directory" Margin="0,0,0,10">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Text="Directory:" Width="100" VerticalAlignment="Center"/>
+                            <TextBox x:Name="SourceDirectoryTextBox" Width="270"/>
+                            <Button Content="..." Width="30" Margin="5,0,0,0" Click="Browse_Click"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="File pattern:" Width="100" VerticalAlignment="Center"/>
+                            <TextBox x:Name="FilePatternTextBox" Width="150" Text="*.*"/>
+                            <TextBlock Text="(e.g., *.txt, *.jpg)" Foreground="Gray" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Margin="0,10">
-                        <TextBlock Text="File pattern:" Width="100" VerticalAlignment="Center"/>
-                        <TextBox x:Name="FilePatternTextBox" Width="150" Text="*.*"/>
-                        <TextBlock Text="(e.g., *.txt, *.jpg)" Foreground="Gray" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                </GroupBox>
+                
+                <GroupBox Header="Options" Margin="0,0,0,10">
+                    <StackPanel Margin="10">
+                        <CheckBox x:Name="IncludeSubdirectoriesCheckBox" 
+                                  Content="Include subdirectories" 
+                                  Margin="0,5"/>
+                        <CheckBox x:Name="MergeWithExistingCheckBox" 
+                                  Content="Merge with existing files in stream (keep + add new)" 
+                                  IsChecked="True"
+                                  Margin="0,5"/>
                     </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            
-            <GroupBox Header="Options" Margin="0,0,0,10">
-                <StackPanel Margin="10">
-                    <CheckBox x:Name="IncludeSubdirectoriesCheckBox" 
-                              Content="Include subdirectories" 
-                              Margin="0,5"/>
-                    <CheckBox x:Name="MergeWithExistingCheckBox" 
-                              Content="Merge with existing files in stream (keep + add new)" 
-                              IsChecked="True"
-                              Margin="0,5"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
         
         <StackPanel Grid.Row="2" 
                     Orientation="Horizontal" 
