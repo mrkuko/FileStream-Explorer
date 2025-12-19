@@ -23,6 +23,9 @@ namespace FileStreamExplorer.Infrastructure.Operations
         public string FindText { get; set; } = string.Empty;
         public string ReplaceText { get; set; } = string.Empty;
         public bool NormalizeSpaces { get; set; }
+        // When true, keep the original core file name (name before extension) as part of the new name.
+        // When false, the core is removed and only prefix/numbering/suffix are used.
+        public bool KeepCoreName { get; set; } = true;
         public CaseTransform CaseTransform { get; set; } = CaseTransform.None;
     }
 
@@ -165,8 +168,11 @@ namespace FileStreamExplorer.Infrastructure.Operations
                     ? Path.GetFileNameWithoutExtension(originalName)
                     : originalName;
 
+                // Decide whether to keep the original core name or start from empty
+                var baseName = _config.KeepCoreName ? nameWithoutExt : string.Empty;
+
                 // Apply transformations
-                var newName = ApplyTransformations(nameWithoutExt, currentNumber);
+                var newName = ApplyTransformations(baseName, currentNumber);
                 newName += extension;
 
                 var directory = Path.GetDirectoryName(file.FullPath) ?? string.Empty;
@@ -241,6 +247,7 @@ namespace FileStreamExplorer.Infrastructure.Operations
                 StartNumber = _config.StartNumber,
                 NumberPadding = _config.NumberPadding,
                 PreserveExtension = _config.PreserveExtension,
+                KeepCoreName = _config.KeepCoreName,
                 FindText = _config.FindText,
                 ReplaceText = _config.ReplaceText,
                 NormalizeSpaces = _config.NormalizeSpaces,

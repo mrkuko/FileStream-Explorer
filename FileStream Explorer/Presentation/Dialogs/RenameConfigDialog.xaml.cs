@@ -22,6 +22,7 @@ namespace FileStream_Explorer
             Configuration.ReplaceText = ReplaceTextBox.Text;
             Configuration.UseSequentialNumbering = UseNumberingCheckBox.IsChecked ?? false;
             Configuration.NormalizeSpaces = NormalizeSpacesCheckBox.IsChecked ?? false;
+            Configuration.KeepCoreName = KeepCoreNameCheckBox.IsChecked ?? true;
 
             if (int.TryParse(StartNumberTextBox.Text, out int startNum))
                 Configuration.StartNumber = startNum;

@@ -78,6 +78,10 @@
                         <CheckBox x:Name="NormalizeSpacesCheckBox" 
                                 Content="Normalize spaces (remove extra spaces)" 
                                 Margin="0,5"/>
+                        <CheckBox x:Name="KeepCoreNameCheckBox"
+                                  Content="Keep core of original file name"
+                                  IsChecked="True"
+                                  Margin="0,5"/>
                         
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                             <TextBlock Text="Case transform:" Width="120" VerticalAlignment="Center"/>
