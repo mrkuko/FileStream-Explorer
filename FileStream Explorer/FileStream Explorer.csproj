@@ -8,5 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets\FileStreamExplorer.ico</ApplicationIcon>
+    <Win32Icon>Assets\FileStreamExplorer.ico</Win32Icon>
   </PropertyGroup>
 </Project>
